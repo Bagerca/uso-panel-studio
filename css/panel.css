@@ -1,56 +1,64 @@
 /* css/panel.css */
 
+/* === ГЛАВНЫЙ КОНТЕЙНЕР === */
 #render-target {
     position: relative;
     box-sizing: border-box;
     width: var(--p-width, 320px);
     border-radius: var(--p-radius, 16px);
     padding: var(--p-pad, 24px) 28px;
+    
     display: flex;
     flex-direction: column;
     z-index: 1;
     
-    background: transparent;
-    /* Наружное свечение плашки (экспортируется отлично) */
+    /* 1. БАЗОВЫЙ ФОН */
+    background: linear-gradient(135deg, #12131a 0%, #08090d 100%);
+    
+    /* 2. НАТИВНАЯ ЛЕВАЯ ЛИНИЯ (Идеально скругляется всегда!) */
+    border-left: 4px solid var(--ac-color);
+    
+    /* 3. ТОНКАЯ РАМКА ДЛЯ ОСТАЛЬНЫХ СТОРОН */
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    
+    /* 4. НАРУЖНОЕ СВЕЧЕНИЕ (Не обрезается, так как нет overflow: hidden) */
     box-shadow: -6px 0 var(--g-box) rgba(var(--ac-rgb), 0.6);
 }
 
-/* === СЛОЙ 1: ФОН И ЛЕВАЯ ЛИНИЯ === */
-.p-layer-bg {
+/* === ВНУТРЕННИЕ ФОНЫ (Звезды и радиальный неон) === */
+.p-inner-bgs {
     position: absolute;
-    inset: 0;
+    /* inset: 0 располагает блок ровно внутри border-left, не перекрывая его */
+    top: 0; right: 0; bottom: 0; left: 0;
     border-radius: inherit;
-    overflow: hidden;
-    z-index: -2;
-    background: linear-gradient(135deg, #12131a 0%, #08090d 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    
-    /* THE MAGIC: Внутренняя тень создает ИДЕАЛЬНУЮ левую линию.
-       Она математически точно огибает любой border-radius и на 100% 
-       корректно сохраняется в PNG через html2canvas */
-    box-shadow: inset 4px 0 0 var(--ac-color);
+    overflow: hidden; /* Обрезает звезды строго по радиусу */
+    z-index: -1;
+    pointer-events: none;
 }
 
 .p-stars {
     position: absolute; inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='10' cy='15' r='1'/%3E%3Ccircle cx='45' cy='8' r='0.5'/%3E%3Ccircle cx='80' cy='25' r='1.5'/%3E%3Ccircle cx='25' cy='60' r='1'/%3E%3Ccircle cx='70' cy='75' r='0.8'/%3E%3Ccircle cx='90' cy='90' r='1.2'/%3E%3Ccircle cx='50' cy='50' r='0.5'/%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.5; pointer-events: none;
+    opacity: 0.5;
 }
 
 .p-glow {
     position: absolute; top: -50px; left: -50px; width: 250px; height: 250px;
     background: radial-gradient(circle at center, var(--ac-color) 0%, transparent 60%);
-    opacity: calc(0.12 * var(--g-bg)); pointer-events: none;
+    opacity: calc(0.12 * var(--g-bg));
 }
 
-/* === СЛОЙ 2: КОНТЕНТ === */
-.p-layer-content { 
+/* === СЛОЙ КОНТЕНТА === */
+.p-content { 
     position: relative; 
     z-index: 5; 
     display: flex; 
     width: 100%; 
 }
 
+/* Блок иконки */
 .p-icon-wrap {
     width: 60px; height: 60px; flex-shrink: 0;
     background: rgba(0,0,0,0.5); border-radius: 14px;
@@ -59,7 +67,7 @@
     position: relative;
 }
 
-/* Неон иконки (Без calc() - рендерится идеально при скачивании) */
+/* Неон иконки */
 .p-icon-glow {
     position: absolute;
     top: 50%; left: 50%;
@@ -77,9 +85,9 @@
     z-index: 2; 
 }
 
+/* Блок текстов */
 .p-text-col { display: flex; flex-direction: column; justify-content: center; width: 100%; }
 
-/* Тексты (Тень передается из JS в чистых пикселях) */
 .p-title {
     font-family: var(--ff-title, 'Orbitron', sans-serif); 
     font-size: var(--fs-title); 
@@ -123,10 +131,10 @@
 }
 .p-body-text b { font-weight: 800; color: #fff; text-shadow: 0 0 var(--g-text) var(--ac-color); }
 
-/* РЕЖИМЫ */
-.panel-layout-header .p-layer-content { align-items: center; gap: 18px; flex-direction: row; }
+/* === РЕЖИМЫ МАКЕТА === */
+.panel-layout-header .p-content { align-items: center; gap: 18px; flex-direction: row; }
 .panel-layout-header .p-divider, .panel-layout-header .p-body-text { display: none !important; }
-.panel-layout-list .p-layer-content { flex-direction: column; align-items: flex-start; gap: 8px; }
+.panel-layout-list .p-content { flex-direction: column; align-items: flex-start; gap: 8px; }
 .panel-layout-list .p-icon-wrap { display: none; }
 .panel-layout-list .p-divider { display: flex; }
 .panel-layout-list .p-body-text { display: block; }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USO | Twitch Panel Studio PRO 3.0</title>
+    <title>USO | Twitch Panel Studio PRO 5.0</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +17,7 @@
 <body>
 
     <aside class="editor-sidebar">
+        <!-- Сайдбар остался без изменений -->
         <div class="sidebar-header">
             <h2>PANEL STUDIO <span>PRO</span></h2>
             <p>Генератор оформления для Twitch</p>
@@ -34,7 +35,6 @@
         </div>
 
         <div class="tabs-container">
-            <!-- Макет -->
             <div class="tab-pane active" id="tab-layout">
                 <div class="control-section">
                     <label>Режим макета</label>
@@ -43,19 +43,16 @@
                         <button class="toggle-btn" data-val="list">Список (Текст)</button>
                     </div>
                 </div>
-
                 <div class="control-section" style="margin-top: 15px;">
                     <label>Ширина баннера: <span id="val-width">320px</span></label>
                     <input type="range" id="ctrl-width" data-state="width" min="200" max="800" step="10">
                 </div>
-
                 <div class="control-section" style="margin-top: 15px;">
                     <label>Отступы (Высота): <span id="val-padding">24px</span></label>
                     <input type="range" id="ctrl-padding" data-state="padding" min="10" max="60" step="2">
                 </div>
             </div>
 
-            <!-- Дизайн -->
             <div class="tab-pane" id="tab-design">
                 <div class="control-row">
                     <div class="control-section">
@@ -65,7 +62,6 @@
                             <input type="text" id="ctrl-color-hex" data-state="accentColor" maxlength="7" spellcheck="false">
                         </div>
                     </div>
-                    
                     <div class="control-section" id="icon-group">
                         <label>Иконка</label>
                         <select id="ctrl-icon" data-state="icon">
@@ -80,29 +76,25 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="control-section" style="margin-top: 15px;">
                     <label>Интенсивность неона: <span id="val-glow">100%</span></label>
                     <input type="range" id="ctrl-glow" data-state="glow" min="0" max="200" step="10">
                 </div>
-
                 <div class="control-section" style="margin-top: 15px;">
                     <label>Скругление углов: <span id="val-radius">16px</span></label>
                     <input type="range" id="ctrl-radius" data-state="radius" min="0" max="80" step="2">
                 </div>
             </div>
 
-            <!-- Текст -->
             <div class="tab-pane" id="tab-text">
                 <div class="control-section">
                     <label>Шрифт заголовка</label>
                     <select id="ctrl-font-title" data-state="fontTitle">
-                        <option value="'Orbitron', sans-serif">Orbitron (Киберпанк)</option>
-                        <option value="'Montserrat', sans-serif">Montserrat (Строгий)</option>
-                        <option value="'Russo One', sans-serif">Russo One (Жирный)</option>
+                        <option value="'Orbitron', sans-serif">Orbitron</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Russo One', sans-serif">Russo One</option>
                     </select>
                 </div>
-
                 <div class="control-section" style="margin-top: 15px;">
                     <label>Главный заголовок</label>
                     <input type="text" id="ctrl-title" data-state="title" autocomplete="off">
@@ -111,7 +103,6 @@
                         <input type="range" id="ctrl-size-title" data-state="sizeTitle" min="16" max="50">
                     </div>
                 </div>
-
                 <div class="control-section" style="margin-top: 15px;">
                     <label>Подзаголовок</label>
                     <input type="text" id="ctrl-subtitle" data-state="subtitle" autocomplete="off">
@@ -120,10 +111,8 @@
                         <input type="range" id="ctrl-size-sub" data-state="sizeSub" min="8" max="24">
                     </div>
                 </div>
-
                 <div id="body-group" style="margin-top: 15px;">
                     <hr class="divider" style="margin-bottom: 15px;">
-                    
                     <div class="control-section">
                         <label>Выравнивание текста</label>
                         <div class="toggle-group" id="ctrl-align">
@@ -132,12 +121,10 @@
                             <button class="toggle-btn" data-val="right">Справа</button>
                         </div>
                     </div>
-                    
                     <div class="control-section" style="margin-top: 15px;">
                         <label>Текст (Поддерживает тег &lt;b&gt;)</label>
-                        <textarea id="ctrl-body" data-state="body" spellcheck="false" placeholder="Напишите текст..."></textarea>
+                        <textarea id="ctrl-body" data-state="body" spellcheck="false"></textarea>
                     </div>
-
                     <div class="control-section" style="margin-top: 10px;">
                         <div class="range-mini">
                             <label>Размер:</label>
@@ -158,14 +145,17 @@
         <div class="workspace-hint">ПРЕВЬЮ (Масштабируется под экран)</div>
         <div class="render-wrapper" id="capture-area">
             
+            <!-- ГЛАВНЫЙ КОНТЕЙНЕР (С нативным border-left) -->
             <div id="render-target" class="panel-layout-header">
-                <div class="p-layer-bg">
-                    <div class="p-bg-color"></div>
+                
+                <!-- ВНУТРЕННИЕ ФОНЫ (С overflow: hidden) -->
+                <div class="p-inner-bgs">
                     <div class="p-stars"></div>
                     <div class="p-glow"></div>
                 </div>
                 
-                <div class="p-layer-content">
+                <!-- КОНТЕНТ -->
+                <div class="p-content">
                     <div class="p-icon-wrap" id="view-icon-wrap">
                         <div class="p-icon-glow"></div>
                         <svg id="view-icon" viewBox="0 0 24 24"></svg>
