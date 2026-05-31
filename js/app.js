@@ -1,14 +1,13 @@
 // js/app.js
 import { icons } from './icons.js';
 
-// 1. STATE MANAGER
 class AppState {
     constructor() {
         this.listeners = [];
         this.data = {
             mode: 'header',
             width: 320,
-            padding: 24, // Новое свойство: отступы
+            padding: 24,
             accentColor: '#00ff7f',
             glow: 100,
             radius: 16,
@@ -23,7 +22,6 @@ class AppState {
             sizeBody: 14
         };
     }
-
     subscribe(callback) { this.listeners.push(callback); }
     update(key, value) { if (this.data[key] !== value) { this.data[key] = value; this.notify(); } }
     updateMultiple(newData) { this.data = { ...this.data, ...newData }; this.notify(); }
@@ -38,7 +36,6 @@ const PRESETS = {
     prices: { mode: 'list', accentColor: '#00ff7f', icon: 'gamepad', title: 'ПРАЙС-ЛИСТ', subtitle: 'Заказы и игры', body: '<b>Dota 2</b> - 1000 руб.\n<b>Atomic Heart</b> - 500 руб.\n\nПослушать песню - 100 руб.', width: 320, padding: 24, align: 'left' }
 };
 
-// 2. UI CONTROLLER
 class EditorUI {
     constructor(state) {
         this.state = state;
@@ -107,30 +104,25 @@ class EditorUI {
         document.querySelectorAll('[data-state]').forEach(el => {
             if (el.value !== String(data[el.dataset.state])) el.value = data[el.dataset.state];
         });
-
         document.getElementById('ctrl-color-picker').value = data.accentColor;
         document.getElementById('ctrl-color-hex').value = data.accentColor;
-
         document.getElementById('val-width').innerText = `${data.width}px`;
-        document.getElementById('val-padding').innerText = `${data.padding}px`; // Синхронизация отступов
+        document.getElementById('val-padding').innerText = `${data.padding}px`;
         document.getElementById('val-glow').innerText = `${data.glow}%`;
         document.getElementById('val-radius').innerText = `${data.radius}px`;
 
         document.querySelectorAll('#ctrl-mode .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === data.mode));
         document.querySelectorAll('#ctrl-align .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === data.align));
-
         document.getElementById('icon-group').style.display = data.mode === 'header' ? 'block' : 'none';
         document.getElementById('body-group').style.display = data.mode === 'list' ? 'block' : 'none';
     }
 }
 
-// Вспомогательная функция для конвертации HEX в RGB (нужно для красивой тени бордера)
 function hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 255, 127';
 }
 
-// 3. CANVAS RENDERER
 class CanvasRenderer {
     constructor(state) {
         this.target = document.getElementById('render-target');
@@ -141,18 +133,26 @@ class CanvasRenderer {
             subtitle: document.getElementById('view-subtitle'),
             body: document.getElementById('view-body')
         };
-        
         state.subscribe(data => this.render(data));
     }
 
     render(data) {
+        const ratio = data.glow / 100;
+
         this.target.style.setProperty('--ac-color', data.accentColor);
-        this.target.style.setProperty('--ac-rgb', hexToRgb(data.accentColor)); // RGB для тени контейнера
-        
-        this.target.style.setProperty('--glow-int', data.glow / 100);
+        this.target.style.setProperty('--ac-rgb', hexToRgb(data.accentColor));
         this.target.style.setProperty('--p-radius', `${data.radius}px`);
-        this.target.style.setProperty('--p-pad', `${data.padding}px`); // Применяем отступы
+        this.target.style.setProperty('--p-pad', `${data.padding}px`);
         this.target.style.setProperty('--p-width', `${data.width}px`);
+        
+        // Математика свечения для html2canvas (заменяем calc на чистые пиксели)
+        this.target.style.setProperty('--g-box', `${20 * ratio}px`);
+        this.target.style.setProperty('--g-title', `${15 * ratio}px`);
+        this.target.style.setProperty('--g-text', `${10 * ratio}px`);
+        this.target.style.setProperty('--g-icon-b', `${30 * ratio}px`);
+        this.target.style.setProperty('--g-icon-s', `${12 * ratio}px`);
+        this.target.style.setProperty('--g-div', `${5 * ratio}px`);
+        this.target.style.setProperty('--g-bg', `${ratio}`);
         
         this.target.style.setProperty('--ff-title', data.fontTitle);
         this.target.style.setProperty('--fs-title', `${data.sizeTitle}px`);
@@ -176,7 +176,6 @@ class CanvasRenderer {
     }
 }
 
-// 4. EXPORT MANAGER
 class ExportManager {
     constructor() {
         this.btnCopy = document.getElementById('btn-copy');
@@ -206,7 +205,11 @@ class ExportManager {
 
         try {
             await document.fonts.ready;
-            const canvas = await html2canvas(this.target, { scale: 2, backgroundColor: null, logging: false });
+            const canvas = await html2canvas(this.target, { 
+                scale: 2, 
+                backgroundColor: null, 
+                logging: false 
+            });
 
             if (action === 'download') {
                 const link = document.createElement('a');
