@@ -1,0 +1,93 @@
+/* css/style.css */
+:root {
+    --bg-main: #050508;
+    --bg-panel: #0a0b10;
+    --border-color: rgba(255,255,255,0.1);
+    --text-main: #ffffff;
+    --text-muted: #888888;
+    --accent: #00ff7f;
+}
+
+body {
+    background-color: var(--bg-main); color: var(--text-main);
+    font-family: 'Exo 2', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
+}
+
+/* === САЙДБАР === */
+.editor-sidebar {
+    width: 420px; background: var(--bg-panel); border-right: 1px solid var(--border-color);
+    padding: 30px; display: flex; flex-direction: column; gap: 20px;
+    overflow-y: auto; z-index: 10; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+}
+
+.editor-sidebar::-webkit-scrollbar { width: 6px; }
+.editor-sidebar::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+.sidebar-header h2 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 24px; letter-spacing: 2px; }
+.sidebar-header p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+.divider { border: none; border-top: 1px solid var(--border-color); margin: 0; }
+
+/* === ЭЛЕМЕНТЫ УПРАВЛЕНИЯ === */
+.control-section { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.control-row { display: flex; gap: 15px; }
+
+label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+input[type="text"], textarea, select {
+    background: rgba(255,255,255,0.03); color: #fff;
+    border: 1px solid var(--border-color); padding: 12px;
+    border-radius: 8px; font-family: 'Exo 2', sans-serif; font-size: 14px;
+    transition: 0.2s; box-sizing: border-box; width: 100%;
+}
+input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); background: rgba(0,255,127,0.05); }
+textarea { resize: vertical; min-height: 120px; white-space: pre; }
+
+/* === КАСТОМНЫЙ ВЫБОР ЦВЕТА === */
+.color-picker-group { display: flex; gap: 10px; }
+#ctrl-color-picker {
+    -webkit-appearance: none; border: none; width: 50px; height: 44px;
+    border-radius: 8px; cursor: pointer; padding: 0; background: none; flex-shrink: 0;
+}
+#ctrl-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+#ctrl-color-picker::-webkit-color-swatch { border: 1px solid var(--border-color); border-radius: 8px; }
+#ctrl-color-hex { flex-grow: 1; font-family: monospace; text-transform: uppercase; font-weight: bold; }
+
+/* === КНОПКИ РЕЖИМА === */
+.mode-switch { display: flex; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+.mode-btn { 
+    flex: 1; padding: 12px; background: transparent; border: none; color: var(--text-muted); 
+    font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; 
+    cursor: pointer; transition: 0.2s; 
+}
+.mode-btn.active { background: #fff; color: #000; }
+
+/* === СЕТКА ПРЕСЕТОВ === */
+.preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.preset-btn {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+    border-radius: 8px; padding: 10px 5px; color: #fff; cursor: pointer;
+    font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.preset-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+.preset-btn.active { background: rgba(0,255,127,0.1); border-color: var(--accent); color: var(--accent); }
+
+/* === КНОПКА СКАЧАТЬ === */
+.btn-download {
+    background: linear-gradient(90deg, #ff2d95, #00ff7f); color: #000;
+    border: none; padding: 16px; border-radius: 8px;
+    font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+    transition: 0.3s; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,255,127,0.2);
+}
+.btn-download:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,255,127,0.4); }
+
+/* === РАБОЧАЯ ОБЛАСТЬ === */
+.workspace {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background-image: radial-gradient(circle at center, #15151a 0%, #050508 100%);
+    padding: 40px; overflow-y: auto; position: relative;
+}
+.workspace-hint { position: absolute; top: 30px; font-size: 12px; color: #555; letter-spacing: 4px; font-weight: bold; }

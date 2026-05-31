@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USO | Twitch Panel Studio</title>
+    
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/panel.css">
+
+    <!-- Библиотека для рендера -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <!-- ЛЕВАЯ ПАНЕЛЬ: НАСТРОЙКИ -->
+    <aside class="editor-sidebar">
+        <div class="sidebar-header">
+            <h2>PANEL STUDIO</h2>
+            <p>Генератор оформления Twitch</p>
+        </div>
+
+        <!-- Быстрые пресеты -->
+        <div class="control-section">
+            <label>Быстрые шаблоны</label>
+            <div class="preset-grid" id="preset-grid">
+                <!-- Генерируются в JS -->
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Основные настройки -->
+        <div class="control-section">
+            <label>Режим макета</label>
+            <div class="mode-switch">
+                <button class="mode-btn active" data-mode="header">Заголовок (С иконкой)</button>
+                <button class="mode-btn" data-mode="list">Прайс-лист (Длинный)</button>
+            </div>
+        </div>
+
+        <div class="control-row">
+            <div class="control-section">
+                <label>Цвет Акцента</label>
+                <div class="color-picker-group">
+                    <input type="color" id="ctrl-color-picker" value="#ff2d95">
+                    <input type="text" id="ctrl-color-hex" value="#ff2d95" maxlength="7" spellcheck="false">
+                </div>
+            </div>
+            
+            <div class="control-section" id="icon-group">
+                <label>Иконка</label>
+                <select id="ctrl-icon">
+                    <option value="user">Обо мне</option>
+                    <option value="ghost">Мемы / Хоррор</option>
+                    <option value="money">Донат / Финансы</option>
+                    <option value="discord">Discord</option>
+                    <option value="gamepad">Игры / Прайс</option>
+                    <option value="rules">Правила</option>
+                    <option value="pc">Железо (ПК)</option>
+                    <option value="telegram">Telegram</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <label>Главный заголовок</label>
+            <input type="text" id="ctrl-title" value="ОБО МНЕ" autocomplete="off">
+        </div>
+
+        <div class="control-section">
+            <label>Подзаголовок</label>
+            <input type="text" id="ctrl-subtitle" value="Кто я и почему здесь уютно" autocomplete="off">
+        </div>
+
+        <div class="control-section" id="body-group" style="display: none;">
+            <label>Текст списка</label>
+            <textarea id="ctrl-body" spellcheck="false">Dota 2 - 1000 руб.
+Genshin Impact - 500 руб.
+Atomic Heart - 500 руб.
+
+Послушать песню - 100 руб.
+Посмотреть видео - 200 руб.</textarea>
+        </div>
+
+        <button class="btn-download" id="btn-download">
+            <span id="btn-text">СКАЧАТЬ PNG</span>
+        </button>
+    </aside>
+
+    <!-- ПРАВАЯ ПАНЕЛЬ: ПРЕВЬЮ -->
+    <main class="workspace">
+        <div class="workspace-hint">РАБОЧАЯ ОБЛАСТЬ (Идеальная ширина 320px)</div>
+        
+        <!-- САМ БАННЕР -->
+        <div id="render-target" class="panel-layout-header" style="--ac-color: #ff2d95;">
+            <!-- Безопасный SVG-фон со звездами -->
+            <div class="p-stars"></div>
+            <!-- Свечение -->
+            <div class="p-glow"></div>
+            
+            <div class="p-content">
+                <div class="p-icon-wrap" id="view-icon-wrap">
+                    <svg id="view-icon" viewBox="0 0 24 24"></svg>
+                </div>
+                
+                <div class="p-text-col">
+                    <h2 class="p-title" id="view-title">ОБО МНЕ</h2>
+                    <p class="p-subtitle" id="view-subtitle">Кто я и почему здесь уютно</p>
+                </div>
+            </div>
+            
+            <!-- Текст для режима "Список" -->
+            <div class="p-body-text" id="view-body"></div>
+        </div>
+    </main>
+
+    <!-- Скрипты (Используем модули) -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
