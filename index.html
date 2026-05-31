@@ -3,125 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USO | Twitch Panel Studio</title>
+    <title>USO | Twitch Panel Studio PRO 2.0</title>
     
-    <!-- Шрифты -->
+    <!-- Подключаем расширенный пак шрифтов -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;500;700;800&family=Rajdhani:wght@600;700&family=Montserrat:wght@700;900&family=Russo+One&display=swap" rel="stylesheet">
     
-    <!-- Стили -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/panel.css">
 
-    <!-- Библиотека для рендера -->
+    <!-- Библиотека рендера -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
-    <!-- ЛЕВАЯ ПАНЕЛЬ: НАСТРОЙКИ -->
+    <!-- ЛЕВАЯ ПАНЕЛЬ: РЕДАКТОР -->
     <aside class="editor-sidebar">
         <div class="sidebar-header">
-            <h2>PANEL STUDIO</h2>
-            <p>Генератор оформления Twitch</p>
+            <h2>PANEL STUDIO <span>PRO</span></h2>
+            <p>Генератор оформления для Twitch</p>
         </div>
 
-        <!-- Быстрые пресеты -->
         <div class="control-section">
             <label>Быстрые шаблоны</label>
-            <div class="preset-grid" id="preset-grid">
-                <!-- Генерируются в JS -->
-            </div>
+            <div class="preset-grid" id="preset-grid"></div>
         </div>
 
-        <hr class="divider">
-
-        <!-- Основные настройки -->
-        <div class="control-section">
-            <label>Режим макета</label>
-            <div class="mode-switch">
-                <button class="mode-btn active" data-mode="header">Заголовок (С иконкой)</button>
-                <button class="mode-btn" data-mode="list">Прайс-лист (Длинный)</button>
-            </div>
+        <!-- ТАБЫ ВМЕСТО АККОРДЕОНОВ -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-target="tab-layout">Макет</button>
+            <button class="tab-btn" data-target="tab-design">Дизайн</button>
+            <button class="tab-btn" data-target="tab-text">Текст</button>
         </div>
 
-        <div class="control-row">
-            <div class="control-section">
-                <label>Цвет Акцента</label>
-                <div class="color-picker-group">
-                    <input type="color" id="ctrl-color-picker" value="#ff2d95">
-                    <input type="text" id="ctrl-color-hex" value="#ff2d95" maxlength="7" spellcheck="false">
+        <div class="tabs-container">
+            <!-- Вкладка: Макет -->
+            <div class="tab-pane active" id="tab-layout">
+                <div class="control-section">
+                    <label>Режим макета</label>
+                    <div class="toggle-group" id="ctrl-mode">
+                        <button class="toggle-btn" data-val="header">Плашка (Иконка)</button>
+                        <button class="toggle-btn" data-val="list">Список (Текст)</button>
+                    </div>
+                </div>
+
+                <div class="control-section" style="margin-top: 15px;">
+                    <label>Ширина баннера: <span id="val-width">320px</span></label>
+                    <input type="range" id="ctrl-width" data-state="width" min="200" max="800" step="10">
                 </div>
             </div>
-            
-            <div class="control-section" id="icon-group">
-                <label>Иконка</label>
-                <select id="ctrl-icon">
-                    <option value="user">Обо мне</option>
-                    <option value="ghost">Мемы / Хоррор</option>
-                    <option value="money">Донат / Финансы</option>
-                    <option value="discord">Discord</option>
-                    <option value="gamepad">Игры / Прайс</option>
-                    <option value="rules">Правила</option>
-                    <option value="pc">Железо (ПК)</option>
-                    <option value="telegram">Telegram</option>
-                </select>
+
+            <!-- Вкладка: Дизайн -->
+            <div class="tab-pane" id="tab-design">
+                <div class="control-row">
+                    <div class="control-section">
+                        <label>Цвет Акцента</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="ctrl-color-picker">
+                            <input type="text" id="ctrl-color-hex" data-state="accentColor" maxlength="7" spellcheck="false">
+                        </div>
+                    </div>
+                    
+                    <div class="control-section" id="icon-group">
+                        <label>Иконка</label>
+                        <select id="ctrl-icon" data-state="icon">
+                            <option value="user">Обо мне</option>
+                            <option value="ghost">Мемы / Хоррор</option>
+                            <option value="money">Донат / Финансы</option>
+                            <option value="discord">Discord</option>
+                            <option value="gamepad">Игры / Прайс</option>
+                            <option value="rules">Правила</option>
+                            <option value="pc">Железо (ПК)</option>
+                            <option value="telegram">Telegram</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-section" style="margin-top: 15px;">
+                    <label>Интенсивность неона: <span id="val-glow">100%</span></label>
+                    <input type="range" id="ctrl-glow" data-state="glow" min="0" max="200" step="10">
+                </div>
+
+                <div class="control-section" style="margin-top: 15px;">
+                    <label>Скругление углов: <span id="val-radius">16px</span></label>
+                    <input type="range" id="ctrl-radius" data-state="radius" min="0" max="40" step="2">
+                </div>
+            </div>
+
+            <!-- Вкладка: Текст -->
+            <div class="tab-pane" id="tab-text">
+                <div class="control-section">
+                    <label>Шрифт заголовка</label>
+                    <select id="ctrl-font-title" data-state="fontTitle">
+                        <option value="'Orbitron', sans-serif">Orbitron (Киберпанк)</option>
+                        <option value="'Montserrat', sans-serif">Montserrat (Строгий)</option>
+                        <option value="'Russo One', sans-serif">Russo One (Жирный)</option>
+                    </select>
+                </div>
+
+                <div class="control-section" style="margin-top: 15px;">
+                    <label>Главный заголовок</label>
+                    <input type="text" id="ctrl-title" data-state="title" autocomplete="off">
+                    <div class="range-mini">
+                        <label>Размер:</label>
+                        <input type="range" id="ctrl-size-title" data-state="sizeTitle" min="16" max="50">
+                    </div>
+                </div>
+
+                <div class="control-section" style="margin-top: 15px;">
+                    <label>Подзаголовок</label>
+                    <input type="text" id="ctrl-subtitle" data-state="subtitle" autocomplete="off">
+                    <div class="range-mini">
+                        <label>Размер:</label>
+                        <input type="range" id="ctrl-size-sub" data-state="sizeSub" min="8" max="24">
+                    </div>
+                </div>
+
+                <div id="body-group" style="margin-top: 15px;">
+                    <hr class="divider" style="margin-bottom: 15px;">
+                    
+                    <div class="control-section">
+                        <label>Выравнивание текста</label>
+                        <div class="toggle-group" id="ctrl-align">
+                            <button class="toggle-btn" data-val="left">Слева</button>
+                            <button class="toggle-btn" data-val="center">Центр</button>
+                            <button class="toggle-btn" data-val="right">Справа</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-section" style="margin-top: 15px;">
+                        <label>Текст (Поддерживает тег &lt;b&gt;)</label>
+                        <textarea id="ctrl-body" data-state="body" spellcheck="false" placeholder="Напишите текст..."></textarea>
+                    </div>
+
+                    <div class="control-section" style="margin-top: 10px;">
+                        <div class="range-mini">
+                            <label>Размер:</label>
+                            <input type="range" id="ctrl-size-body" data-state="sizeBody" min="10" max="24">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="control-section">
-            <label>Главный заголовок</label>
-            <input type="text" id="ctrl-title" value="ОБО МНЕ" autocomplete="off">
+        <div class="action-buttons">
+            <button class="btn-copy" id="btn-copy">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                В буфер
+            </button>
+            <button class="btn-download" id="btn-download">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Скачать PNG
+            </button>
         </div>
-
-        <div class="control-section">
-            <label>Подзаголовок</label>
-            <input type="text" id="ctrl-subtitle" value="Кто я и почему здесь уютно" autocomplete="off">
-        </div>
-
-        <div class="control-section" id="body-group" style="display: none;">
-            <label>Текст списка</label>
-            <textarea id="ctrl-body" spellcheck="false">Dota 2 - 1000 руб.
-Genshin Impact - 500 руб.
-Atomic Heart - 500 руб.
-
-Послушать песню - 100 руб.
-Посмотреть видео - 200 руб.</textarea>
-        </div>
-
-        <button class="btn-download" id="btn-download">
-            <span id="btn-text">СКАЧАТЬ PNG</span>
-        </button>
     </aside>
 
-    <!-- ПРАВАЯ ПАНЕЛЬ: ПРЕВЬЮ -->
+    <!-- ПРАВАЯ ПАНЕЛЬ: РАБОЧАЯ ОБЛАСТЬ -->
     <main class="workspace">
-        <div class="workspace-hint">РАБОЧАЯ ОБЛАСТЬ (Идеальная ширина 320px)</div>
+        <div class="workspace-hint">ПРЕВЬЮ (Масштабируется под экран)</div>
         
-        <!-- САМ БАННЕР -->
-        <div id="render-target" class="panel-layout-header" style="--ac-color: #ff2d95;">
-            <!-- Безопасный SVG-фон со звездами -->
-            <div class="p-stars"></div>
-            <!-- Свечение -->
-            <div class="p-glow"></div>
-            
-            <div class="p-content">
-                <div class="p-icon-wrap" id="view-icon-wrap">
-                    <svg id="view-icon" viewBox="0 0 24 24"></svg>
+        <div class="render-wrapper" id="capture-area">
+            <!-- БАННЕР -->
+            <div id="render-target" class="panel-layout-header">
+                
+                <!-- НОВЫЙ ИЗОЛИРОВАННЫЙ КОНТЕЙНЕР ФОНА (обрезает лишнее внутри) -->
+                <div class="p-backgrounds">
+                    <div class="p-bg-color"></div>
+                    <div class="p-stars"></div>
+                    <div class="p-glow"></div>
                 </div>
                 
-                <div class="p-text-col">
-                    <h2 class="p-title" id="view-title">ОБО МНЕ</h2>
-                    <p class="p-subtitle" id="view-subtitle">Кто я и почему здесь уютно</p>
+                <div class="p-content">
+                    <div class="p-icon-wrap" id="view-icon-wrap">
+                        <svg id="view-icon" viewBox="0 0 24 24"></svg>
+                    </div>
+                    
+                    <div class="p-text-col">
+                        <h2 class="p-title" id="view-title">ОБО МНЕ</h2>
+                        <p class="p-subtitle" id="view-subtitle">Кто я и почему здесь уютно</p>
+                    </div>
                 </div>
+                
+                <div class="p-divider" id="view-divider">
+                    <div class="div-line"></div>
+                    <div class="div-dot"></div>
+                    <div class="div-line"></div>
+                </div>
+                
+                <div class="p-body-text" id="view-body"></div>
             </div>
-            
-            <!-- Текст для режима "Список" -->
-            <div class="p-body-text" id="view-body"></div>
         </div>
     </main>
 
-    <!-- Скрипты (Используем модули) -->
+    <!-- Контейнер для уведомлений -->
+    <div id="toast-container"></div>
+
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
