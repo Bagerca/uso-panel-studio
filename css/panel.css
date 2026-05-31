@@ -1,25 +1,34 @@
 /* css/panel.css */
 
+/* === ГЛАВНЫЙ КОНТЕЙНЕР (ГЕОМЕТРИЯ И БОРТЫ) === */
 #render-target {
-    /* Ширина, радиус и цвета меняются через JS (CSS Variables) */
     position: relative;
     box-sizing: border-box;
+    /* Управление геометрией через переменные JS */
+    width: var(--p-width, 320px);
     border-radius: var(--p-radius, 16px);
-    padding: 24px 28px;
+    padding: var(--p-pad, 24px) 28px;
+    
     display: flex;
     flex-direction: column;
     z-index: 1;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    /* overflow: hidden УБРАН, чтобы внешние тени не обрезались */
+    
+    /* Идеальная математическая левая линия */
+    border-left: 4px solid var(--ac-color);
+    
+    /* Свечение исходит от самого физического блока наружу */
+    box-shadow: 
+        -6px 0 calc(20px * var(--glow-int)) rgba(var(--ac-rgb), 0.6),
+        0 0 0 1px rgba(255,255,255,0.03); /* Тонкая рамка вокруг всей плашки */
 }
 
-/* === КОНТЕЙНЕР ФОНОВ (ИЗОЛЯЦИЯ) === */
-.p-backgrounds {
+/* === СЛОЙ 1: ИЗОЛИРОВАННЫЙ ФОН === */
+.p-layer-bg {
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    overflow: hidden;
-    z-index: -3;
+    inset: 0; /* Растягиваем от границы до границы внутри */
+    border-radius: inherit; /* Идеально повторяет скругление родителя */
+    overflow: hidden; /* Обрезает звезды по краям */
+    z-index: -2;
 }
 
 .p-bg-color {
@@ -38,31 +47,43 @@
     background: radial-gradient(circle at center, var(--ac-color) 0%, transparent 60%);
     opacity: calc(0.12 * var(--glow-int)); pointer-events: none;
 }
-/* ================================= */
 
-/* Левая толстая неоновая линия */
-#render-target::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; bottom: 0; width: 4px;
-    background: var(--ac-color);
-    box-shadow: 0 0 calc(15px * var(--glow-int)) var(--ac-color);
-    z-index: 10;
-    border-top-left-radius: var(--p-radius, 16px);
-    border-bottom-left-radius: var(--p-radius, 16px);
+/* === СЛОЙ 2: КОНТЕНТ (ИКОНКА И ЗАГОЛОВОК) === */
+.p-layer-content { 
+    position: relative; 
+    z-index: 5; 
+    display: flex; 
+    width: 100%; 
 }
 
-.p-content { position: relative; z-index: 5; display: flex; width: 100%; }
-
+/* Блок иконки */
 .p-icon-wrap {
     width: 60px; height: 60px; flex-shrink: 0;
     background: rgba(0,0,0,0.5); border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
     border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: inset 0 0 15px rgba(255,255,255,0.05), 0 0 calc(20px * var(--glow-int)) rgba(var(--ac-color), 0.2);
+    position: relative;
 }
-.p-icon-wrap svg { width: 28px; height: 28px; fill: var(--ac-color); filter: drop-shadow(0 0 calc(8px * var(--glow-int)) var(--ac-color)); }
 
-/* Текстовая колонка (УБРАН overflow: hidden, чтобы не резать тень) */
+/* Физическая аура под иконкой для html2canvas */
+.p-icon-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px; height: 2px; 
+    box-shadow: 0 0 calc(30px * var(--glow-int)) calc(12px * var(--glow-int)) var(--ac-color);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.p-icon-wrap svg { 
+    width: 28px; height: 28px; 
+    fill: var(--ac-color); 
+    position: relative;
+    z-index: 2; 
+}
+
+/* Блок текстов */
 .p-text-col { 
     display: flex; 
     flex-direction: column; 
@@ -70,7 +91,6 @@
     width: 100%; 
 }
 
-/* Тексты (УБРАНО обрезание nowrap, добавлено word-break) */
 .p-title {
     font-family: var(--ff-title, 'Orbitron', sans-serif); 
     font-size: var(--fs-title); 
@@ -81,7 +101,8 @@
     text-transform: uppercase;
     text-shadow: 0 0 calc(15px * var(--glow-int)) var(--ac-color);
     letter-spacing: 1px;
-    word-break: break-word; /* Позволяет длинным словам переноситься, не режет неон */
+    word-break: normal; 
+    overflow-wrap: break-word; 
 }
 
 .p-subtitle {
@@ -89,7 +110,7 @@
     font-size: var(--fs-sub); margin: 0; text-transform: uppercase; letter-spacing: 1px;
 }
 
-/* === РАЗДЕЛИТЕЛЬ С ИДЕАЛЬНЫМ НЕОНОМ === */
+/* === РАЗДЕЛИТЕЛЬ === */
 .p-divider { 
     width: 100%; 
     margin: 20px 0 15px 0; 
@@ -101,19 +122,12 @@
 
 .p-divider .div-line { 
     flex: 1 1 0%; 
-    height: 2px; /* Чуть толще для лучшего свечения */
-    border-radius: 2px;
-    /* ИСПОЛЬЗУЕМ drop-shadow ВМЕСТО box-shadow. Тень повторяет альфа-канал градиента! */
-    filter: drop-shadow(0 0 calc(6px * var(--glow-int)) var(--ac-color));
+    height: 1px;
+    box-shadow: 0 0 calc(5px * var(--glow-int)) var(--ac-color);
 }
 
-.p-divider .div-line:first-child { 
-    background: linear-gradient(90deg, transparent 0%, var(--ac-color) 100%); 
-}
-
-.p-divider .div-line:last-child { 
-    background: linear-gradient(90deg, var(--ac-color) 0%, transparent 100%); 
-}
+.p-divider .div-line:first-child { background: linear-gradient(90deg, transparent 0%, var(--ac-color) 100%); }
+.p-divider .div-line:last-child { background: linear-gradient(90deg, var(--ac-color) 0%, transparent 100%); }
 
 .p-divider .div-dot { 
     width: 6px; 
@@ -124,7 +138,7 @@
     flex-shrink: 0;
 }
 
-/* БЛОК ТЕКСТА */
+/* === БЛОК ОПИСАНИЯ === */
 .p-body-text {
     font-family: 'Exo 2', sans-serif; 
     font-size: var(--fs-body); 
@@ -137,7 +151,7 @@
     font-weight: 500;
     display: block;
     white-space: pre-wrap; 
-    word-break: break-word; 
+    overflow-wrap: break-word;
 }
 
 .p-body-text b { 
@@ -146,11 +160,11 @@
     text-shadow: 0 0 calc(10px * var(--glow-int)) var(--ac-color); 
 }
 
-/* РЕЖИМЫ */
-.panel-layout-header .p-content { align-items: center; gap: 18px; flex-direction: row; }
+/* === РЕЖИМЫ МАКЕТА === */
+.panel-layout-header .p-layer-content { align-items: center; gap: 18px; flex-direction: row; }
 .panel-layout-header .p-divider, .panel-layout-header .p-body-text { display: none !important; }
 
-.panel-layout-list .p-content { flex-direction: column; align-items: flex-start; gap: 8px; }
+.panel-layout-list .p-layer-content { flex-direction: column; align-items: flex-start; gap: 8px; }
 .panel-layout-list .p-icon-wrap { display: none; }
 .panel-layout-list .p-divider { display: flex; }
 .panel-layout-list .p-body-text { display: block; }
